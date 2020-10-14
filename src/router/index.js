@@ -136,6 +136,16 @@ export default new Router({
                     path: '/carousel/list',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/CarouselList.vue'),
                     meta: { title: '轮播图列表' }
+                },
+                {
+                    path: '/img/new',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/ProductImgNew.vue'),
+                    meta: { title: '新建商品图片' }
+                },
+                {
+                    path: '/img/list',
+                    component: () => import(/* webpackChunkName: "table" */ '../components/page/ProductImgList.vue'),
+                    meta: { title: '商品图片列表' }
                 }
             ]
         },

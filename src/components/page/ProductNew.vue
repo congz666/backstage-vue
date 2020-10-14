@@ -1,3 +1,10 @@
+<!--
+ * @Descripttion: 
+ * @Author: congz
+ * @Date: 2020-09-26 13:55:29
+ * @LastEditors: congz
+ * @LastEditTime: 2020-10-14 21:10:17
+-->
 <template>
     <div>
         <div class="crumbs">
@@ -11,57 +18,33 @@
         <div class="container">
             <div class="form-box">
                 <el-form ref="form" :model="form" label-width="80px">
-                    <el-form-item label="表单名称">
+                    <el-form-item label="商品名">
                         <el-input v-model="form.name"></el-input>
                     </el-form-item>
-                    <el-form-item label="选择器">
-                        <el-select v-model="form.region" placeholder="请选择">
-                            <el-option key="bbk" label="步步高" value="bbk"></el-option>
-                            <el-option key="xtc" label="小天才" value="xtc"></el-option>
-                            <el-option key="imoo" label="imoo" value="imoo"></el-option>
+                    <el-form-item label="商品简述">
+                        <el-input v-model="form.title"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商品简介">
+                        <el-input type="textarea" rows="5" v-model="form.info"></el-input>
+                    </el-form-item>
+                    <el-form-item label="分类">
+                        <el-select v-model.number="form.category_id" placeholder="请选择">
+                            <el-option
+                                v-for="item in categoriesList"
+                                :key="index"
+                                :label="item.category_name"
+                                :value="item.category_id"
+                            ></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="日期时间">
-                        <el-col :span="11">
-                            <el-date-picker
-                                type="date"
-                                placeholder="选择日期"
-                                v-model="form.date1"
-                                value-format="yyyy-MM-dd"
-                                style="width: 100%;"
-                            ></el-date-picker>
-                        </el-col>
-                        <el-col class="line" :span="2">-</el-col>
-                        <el-col :span="11">
-                            <el-time-picker
-                                placeholder="选择时间"
-                                v-model="form.date2"
-                                style="width: 100%;"
-                            ></el-time-picker>
-                        </el-col>
+                    <el-form-item label="图片地址">
+                        <el-input v-model="form.img_path"></el-input>
                     </el-form-item>
-                    <el-form-item label="城市级联">
-                        <el-cascader :options="options" v-model="form.options"></el-cascader>
+                    <el-form-item label="商品价格">
+                        <el-input v-model="form.price"></el-input>
                     </el-form-item>
-                    <el-form-item label="选择开关">
-                        <el-switch v-model="form.delivery"></el-switch>
-                    </el-form-item>
-                    <el-form-item label="多选框">
-                        <el-checkbox-group v-model="form.type">
-                            <el-checkbox label="步步高" name="type"></el-checkbox>
-                            <el-checkbox label="小天才" name="type"></el-checkbox>
-                            <el-checkbox label="imoo" name="type"></el-checkbox>
-                        </el-checkbox-group>
-                    </el-form-item>
-                    <el-form-item label="单选框">
-                        <el-radio-group v-model="form.resource">
-                            <el-radio label="步步高"></el-radio>
-                            <el-radio label="小天才"></el-radio>
-                            <el-radio label="imoo"></el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                    <el-form-item label="文本框">
-                        <el-input type="textarea" rows="5" v-model="form.desc"></el-input>
+                    <el-form-item label="折后价">
+                        <el-input v-model="form.discount_price"></el-input>
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @click="onSubmit">表单提交</el-button>
@@ -74,77 +57,35 @@
 </template>
 
 <script>
+import * as productAPI from '@/api/product/';
+import * as categoryAPI from '@/api/other/category/';
 export default {
-    name: 'baseform',
+    name: 'ProductNew',
     data() {
         return {
-            options: [
-                {
-                    value: 'guangdong',
-                    label: '广东省',
-                    children: [
-                        {
-                            value: 'guangzhou',
-                            label: '广州市',
-                            children: [
-                                {
-                                    value: 'tianhe',
-                                    label: '天河区'
-                                },
-                                {
-                                    value: 'haizhu',
-                                    label: '海珠区'
-                                }
-                            ]
-                        },
-                        {
-                            value: 'dongguan',
-                            label: '东莞市',
-                            children: [
-                                {
-                                    value: 'changan',
-                                    label: '长安镇'
-                                },
-                                {
-                                    value: 'humen',
-                                    label: '虎门镇'
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    value: 'hunan',
-                    label: '湖南省',
-                    children: [
-                        {
-                            value: 'changsha',
-                            label: '长沙市',
-                            children: [
-                                {
-                                    value: 'yuelu',
-                                    label: '岳麓区'
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
             form: {
                 name: '',
-                region: '',
-                date1: '',
-                date2: '',
-                delivery: true,
-                type: ['步步高'],
-                resource: '小天才',
-                desc: '',
-                options: []
-            }
+                title: '',
+                info: '',
+                category_id: 1,
+                img_path: '',
+                price: '',
+                discount_price: ''
+            },
+            categoriesList: []
         };
     },
+    created() {
+        this.getData();
+    },
     methods: {
+        getData(val) {
+            categoryAPI.listCategories().then(res => {
+                this.categoriesList = res.data.category;
+            });
+        },
         onSubmit() {
+            productAPI.createProduct(this.form).then(res => {});
             this.$message.success('提交成功！');
         }
     }

@@ -88,7 +88,7 @@
 <script>
 import * as categoryAPI from '@/api/other/category/';
 export default {
-    name: 'basetable',
+    name: 'CategoryList',
     data() {
         return {
             start: 0,
@@ -129,7 +129,7 @@ export default {
                 .then(() => {
                     categoryAPI.deleteCategory(row.id).then(res => {});
                     this.$message.success('删除成功');
-                    this.tableData.splice(index, 1);
+                    this.categoriesList.splice(index, 1);
                 })
                 .catch(() => {});
         },

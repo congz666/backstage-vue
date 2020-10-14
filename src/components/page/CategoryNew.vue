@@ -3,7 +3,7 @@
  * @Author: congz
  * @Date: 2020-09-26 14:12:33
  * @LastEditors: congz
- * @LastEditTime: 2020-10-12 22:58:44
+ * @LastEditTime: 2020-10-14 21:11:10
 -->
 <template>
     <div>
@@ -40,7 +40,7 @@
 <script>
 import * as categoryAPI from '@/api/other/category/';
 export default {
-    name: 'baseform',
+    name: 'CategoryNew',
     data() {
         return {
             form: {

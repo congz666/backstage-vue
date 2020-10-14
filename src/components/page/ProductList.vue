@@ -16,7 +16,7 @@
                     class="handle-del mr10"
                     @click="delAllSelection"
                 >批量删除</el-button>
-                <el-select v-model="category_id" placeholder="分类" class="handle-select mr10">
+                <el-select v-model.number="category_id" placeholder="分类" class="handle-select mr10">
                     <el-option
                         v-for="item in categoriesList"
                         :key="index"
@@ -77,13 +77,38 @@
         </div>
 
         <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
+        <el-dialog title="编辑" :visible.sync="editVisible" width="60%">
             <el-form ref="form" label-width="70px">
-                <el-form-item label="用户名">
-                    <el-input></el-input>
+                <el-form-item label="商品ID">
+                    <el-input v-model.number="form.product_id" disabled></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
-                    <el-input></el-input>
+                <el-form-item label="商品名">
+                    <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="商品简述">
+                    <el-input v-model="form.title"></el-input>
+                </el-form-item>
+                <el-form-item label="商品介绍">
+                    <el-input type="textarea" rows="5" v-model="form.info"></el-input>
+                </el-form-item>
+                <el-form-item label="分类">
+                    <el-select v-model.number="form.category_id" placeholder="请选择">
+                        <el-option
+                            v-for="item in categoriesList"
+                            :key="index"
+                            :label="item.category_name"
+                            :value="item.category_id"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="图片地址">
+                    <el-input v-model="form.img_path"></el-input>
+                </el-form-item>
+                <el-form-item label="商品价格">
+                    <el-input v-model="form.price"></el-input>
+                </el-form-item>
+                <el-form-item label="折后价">
+                    <el-input v-model="form.discount_price"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -98,7 +123,7 @@
 import * as productAPI from '@/api/product/';
 import * as categoryAPI from '@/api/other/category/';
 export default {
-    name: 'basetable',
+    name: 'ProductList',
     data() {
         return {
             start: 0,
@@ -111,7 +136,17 @@ export default {
             editVisible: false,
             pageTotal: 0,
             idx: -1,
-            id: -1
+            id: -1,
+            form: {
+                product_id: 0,
+                name: '',
+                title: '',
+                info: '',
+                category_id: 0,
+                img_path: '',
+                price: '',
+                discount_price: ''
+            }
         };
     },
     created() {
@@ -126,7 +161,7 @@ export default {
             });
             if (val == 'all') {
                 categoryAPI.listCategories().then(res => {
-                    this.categoriesList = res.data;
+                    this.categoriesList = res.data.category;
                 });
             }
         },
@@ -143,8 +178,9 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
+                    productAPI.deleteProduct(row.id).then(res => {});
                     this.$message.success('删除成功');
-                    this.tableData.splice(index, 1);
+                    this.productsList.splice(index, 1);
                 })
                 .catch(() => {});
         },
@@ -164,15 +200,20 @@ export default {
         },
         // 编辑操作
         handleEdit(index, row) {
-            this.idx = index;
-            this.form = row;
+            this.form.product_id = row.id;
+            this.form.title = row.title;
+            this.form.info = row.info;
+            this.form.category_id = row.category_id;
+            this.form.img_path = row.img_path;
+            this.form.price = row.price;
+            this.form.discount_price = row.discount_price;
             this.editVisible = true;
         },
         // 保存编辑
         saveEdit() {
             this.editVisible = false;
+            productAPI.updateProduct(this.form).then(res => {});
             this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            this.$set(this.tableData, this.idx, this.form);
         },
         // 分页导航
         handlePageChange(val) {

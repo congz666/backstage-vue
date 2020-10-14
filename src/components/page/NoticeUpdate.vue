@@ -3,7 +3,7 @@
  * @Author: congz
  * @Date: 2020-09-26 14:07:57
  * @LastEditors: congz
- * @LastEditTime: 2020-10-12 17:44:53
+ * @LastEditTime: 2020-10-14 21:10:44
 -->
 <template>
     <div>
@@ -54,7 +54,7 @@ import { mavonEditor } from 'mavon-editor';
 import 'mavon-editor/dist/css/index.css';
 import * as noticeAPI from '@/api/other/notice/';
 export default {
-    name: 'markdown',
+    name: 'NoticeUpdate',
     data: function() {
         return {
             notice_id: '',

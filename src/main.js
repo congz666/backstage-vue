@@ -3,7 +3,7 @@
  * @Author: congz
  * @Date: 2020-09-24 17:15:19
  * @LastEditors: congz
- * @LastEditTime: 2020-09-26 15:25:59
+ * @LastEditTime: 2020-10-13 14:34:26
  */
 import Vue from 'vue';
 import App from './App.vue';
@@ -31,7 +31,7 @@ const i18n = new VueI18n({
 
 //使用钩子函数对路由进行权限跳转
 router.beforeEach((to, from, next) => {
-    document.title = `${to.meta.title} | vue-manage-system`;
+    document.title = `${to.meta.title} | CMall-Backstage`;
     const role = localStorage.getItem('ms_username');
     if (!role && to.path !== '/login') {
         next('/login');

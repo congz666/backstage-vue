@@ -84,6 +84,14 @@ export default {
                         {
                             index: '/product/list',
                             title: '商品列表'
+                        },
+                        {
+                            index: '/img/new',
+                            title: '新建商品图片'
+                        },
+                        {
+                            index: '/img/list',
+                            title: '商品图片列表'
                         }
                     ]
                 },
