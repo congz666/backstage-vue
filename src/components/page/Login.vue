@@ -1,20 +1,22 @@
+<!--
+ * @Descripttion: 
+ * @Author: congz
+ * @Date: 2020-09-24 17:15:19
+ * @LastEditors: congz
+ * @LastEditTime: 2020-10-29 14:13:21
+-->
 <template>
     <div class="login-wrap">
         <div class="ms-login">
             <div class="ms-title">后台管理系统</div>
-            <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
-                <el-form-item prop="username">
-                    <el-input v-model="param.username" placeholder="username">
+            <el-form :model="form" :rules="rules" ref="login" label-width="0px" class="ms-content">
+                <el-form-item prop="user_name">
+                    <el-input v-model="form.user_name" placeholder="username">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input
-                        type="password"
-                        placeholder="password"
-                        v-model="param.password"
-                        @keyup.enter.native="submitForm()"
-                    >
+                    <el-input type="password" placeholder="password" v-model.number="form.password" @keyup.enter.native="submitForm()">
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
@@ -28,34 +30,47 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+import * as userAPI from '@/api/user/';
 export default {
     data: function() {
         return {
-            param: {
-                username: 'admin',
-                password: '123123',
+            form: {
+                user_name: '',
+                password: ''
             },
             rules: {
-                username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-                password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-            },
+                user_name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+                password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+            }
         };
     },
     methods: {
+        ...mapActions(['setAdmin']),
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    this.$message.success('登录成功');
-                    localStorage.setItem('ms_username', this.param.username);
-                    this.$router.push('/');
+                    userAPI.adminLogin(this.form).then(res => {
+                        if (res.code == 200) {
+                            this.$message.success('登录成功');
+                            let admin = JSON.stringify(res.data.admin);
+                            localStorage.setItem('admin', admin);
+                            localStorage.setItem('token', res.data.token);
+                            this.$router.push('/');
+                            // 登录信息存到vuex
+                            this.setAdmin(res.data.admin);
+                        } else {
+                            this.$message.error(res.msg);
+                        }
+                    });
                 } else {
                     this.$message.error('请输入账号和密码');
                     console.log('error submit!!');
                     return false;
                 }
             });
-        },
-    },
+        }
+    }
 };
 </script>
 

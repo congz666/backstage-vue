@@ -100,52 +100,52 @@ export default new Router({
                 {
                     path: '/user/list',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/UserList.vue'),
-                    meta: { title: '用户列表' }
+                    meta: { title: '用户列表', permission: true }
                 },
                 {
                     path: '/product/new',
                     component: () => import(/* webpackChunkName: "form" */ '../components/page/ProductNew.vue'),
-                    meta: { title: '新建商品' }
+                    meta: { title: '新建商品', permission: true }
                 },
                 {
                     path: '/product/list',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/ProductList.vue'),
-                    meta: { title: '商品列表' }
+                    meta: { title: '商品列表', permission: true }
                 },
                 {
                     path: '/category/new',
                     component: () => import(/* webpackChunkName: "form" */ '../components/page/CategoryNew.vue'),
-                    meta: { title: '新建分类' }
+                    meta: { title: '新建分类', permission: true }
                 },
                 {
                     path: '/category/list',
                     component: () => import(/* webpackChunkName: "form" */ '../components/page/CategoryList.vue'),
-                    meta: { title: '分类列表' }
+                    meta: { title: '分类列表', permission: true }
                 },
                 {
                     path: '/notice/new',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/NoticeNew.vue'),
-                    meta: { title: '新建公告' }
+                    meta: { title: '新建公告', permission: true }
                 },
                 {
                     path: '/notice/update',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/NoticeUpdate.vue'),
-                    meta: { title: '修改公告' }
+                    meta: { title: '修改公告', permission: true }
                 },
                 {
                     path: '/carousel/list',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/CarouselList.vue'),
-                    meta: { title: '轮播图列表' }
+                    meta: { title: '轮播图列表', permission: true }
                 },
                 {
                     path: '/img/new',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/ProductImgNew.vue'),
-                    meta: { title: '新建商品图片' }
+                    meta: { title: '新建商品图片', permission: true }
                 },
                 {
                     path: '/img/list',
                     component: () => import(/* webpackChunkName: "table" */ '../components/page/ProductImgList.vue'),
-                    meta: { title: '商品图片列表' }
+                    meta: { title: '商品图片列表', permission: true }
                 }
             ]
         },
