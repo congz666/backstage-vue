@@ -115,6 +115,15 @@ export default {
         // 获取 easy-mock 的模拟数据
         getData() {
             categoryAPI.listCategories(this.start, this.limit).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('获取分类失败', res.msg);
+                    return;
+                }
                 this.categoriesList = res.data.category;
                 this.pageTotal = res.data.count;
             });
@@ -127,9 +136,19 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-                    categoryAPI.deleteCategory(row.id).then(res => {});
-                    this.$message.success('删除成功');
-                    this.categoriesList.splice(index, 1);
+                    categoryAPI.deleteCategory(row.id).then(res => {
+                        if (res.code == 20001) {
+                            //token过期，需要重新登录
+                            this.loginExpired(res.msg);
+                            return;
+                        }
+                        if (res.code == 404) {
+                            this.notifyError('删除分类失败', res.msg);
+                            return;
+                        }
+                        this.notifySucceed('删除分类成功');
+                        this.categoriesList.splice(index, 1);
+                    });
                 })
                 .catch(() => {});
         },
@@ -158,8 +177,18 @@ export default {
         // 保存编辑
         saveEdit() {
             this.editVisible = false;
-            categoryAPI.updateCategory(this.form).then(res => {});
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
+            categoryAPI.updateCategory(this.form).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('修改分类失败', res.msg);
+                    return;
+                }
+                this.notifySucceed('修改分类成功');
+            });
         },
         // 分页导航
         handlePageChange(val) {

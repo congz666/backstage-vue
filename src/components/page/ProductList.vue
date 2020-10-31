@@ -153,14 +153,31 @@ export default {
         this.getData('all');
     },
     methods: {
-        // 获取 easy-mock 的模拟数据
         getData(val) {
             productAPI.listProducts(Number(this.category_id), this.start, this.limit).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('获取商品失败', res.msg);
+                    return;
+                }
                 this.productsList = res.data.product;
                 this.pageTotal = res.data.count;
             });
             if (val == 'all') {
                 categoryAPI.listCategories().then(res => {
+                    if (res.code == 20001) {
+                        //token过期，需要重新登录
+                        this.loginExpired(res.msg);
+                        return;
+                    }
+                    if (res.code == 404) {
+                        this.notifyError('获取分类失败', res.msg);
+                        return;
+                    }
                     this.categoriesList = res.data.category;
                 });
             }
@@ -178,9 +195,19 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-                    productAPI.deleteProduct(row.id).then(res => {});
-                    this.$message.success('删除成功');
-                    this.productsList.splice(index, 1);
+                    productAPI.deleteProduct(row.id).then(res => {
+                        if (res.code == 20001) {
+                            //token过期，需要重新登录
+                            this.loginExpired(res.msg);
+                            return;
+                        }
+                        if (res.code == 404) {
+                            this.notifyError('删除失败', res.msg);
+                            return;
+                        }
+                        this.notifySucceed('删除商品成功');
+                        this.productsList.splice(index, 1);
+                    });
                 })
                 .catch(() => {});
         },
@@ -212,8 +239,18 @@ export default {
         // 保存编辑
         saveEdit() {
             this.editVisible = false;
-            productAPI.updateProduct(this.form).then(res => {});
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
+            productAPI.updateProduct(this.form).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('修改商品失败', res.msg);
+                    return;
+                }
+                this.notifySucceed('修改商品成功');
+            });
         },
         // 分页导航
         handlePageChange(val) {

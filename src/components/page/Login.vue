@@ -3,7 +3,7 @@
  * @Author: congz
  * @Date: 2020-09-24 17:15:19
  * @LastEditors: congz
- * @LastEditTime: 2020-10-29 14:13:21
+ * @LastEditTime: 2020-10-31 14:54:25
 -->
 <template>
     <div class="login-wrap">
@@ -11,33 +11,45 @@
             <div class="ms-title">后台管理系统</div>
             <el-form :model="form" :rules="rules" ref="login" label-width="0px" class="ms-content">
                 <el-form-item prop="user_name">
-                    <el-input v-model="form.user_name" placeholder="username">
+                    <el-input v-model="form.user_name" placeholder="测试账号:testtest">
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="password" v-model.number="form.password" @keyup.enter.native="submitForm()">
+                    <el-input
+                        type="password"
+                        placeholder="密码:12345678"
+                        v-model="form.password"
+                        @keyup.enter.native="submitForm()"
+                    >
                         <el-button slot="prepend" icon="el-icon-lx-lock"></el-button>
                     </el-input>
                 </el-form-item>
+                <div id="captcha">
+                    <p id="wait">正在加载验证码...</p>
+                </div>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
-                <p class="login-tips">Tips : 用户名和密码随便填。</p>
             </el-form>
         </div>
     </div>
 </template>
-
+<script src="../../assets/gt.js"></script>
 <script>
 import { mapActions } from 'vuex';
 import * as userAPI from '@/api/user/';
+require('../../assets/gt.js');
+var captcha;
 export default {
     data: function() {
         return {
             form: {
                 user_name: '',
-                password: ''
+                password: '',
+                challenge: '',
+                validate: '',
+                seccode: ''
             },
             rules: {
                 user_name: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
@@ -49,7 +61,19 @@ export default {
         ...mapActions(['setAdmin']),
         submitForm() {
             this.$refs.login.validate(valid => {
-                if (valid) {
+                if (!valid) {
+                    this.$message.error('请输入账号和密码');
+                    console.log('error submit!!');
+                    return;
+                }
+                var result = captcha.getValidate();
+                if (!result) {
+                    this.$message.error('请验证');
+                    return;
+                }
+                (this.form.challenge = result.geetest_challenge),
+                    (this.form.validate = result.geetest_validate),
+                    (this.form.seccode = result.geetest_seccode),
                     userAPI.adminLogin(this.form).then(res => {
                         if (res.code == 200) {
                             this.$message.success('登录成功');
@@ -63,13 +87,32 @@ export default {
                             this.$message.error(res.msg);
                         }
                     });
-                } else {
-                    this.$message.error('请输入账号和密码');
-                    console.log('error submit!!');
-                    return false;
-                }
+            });
+        },
+        init_geetest() {
+            userAPI.geetest().then(res => {
+                window.initGeetest(
+                    {
+                        gt: res.gt,
+                        challenge: res.challenge,
+                        new_captcha: res.new_captcha,
+                        offline: !res.success,
+                        product: 'popup',
+                        width: '100%'
+                    },
+                    function(captchaObj) {
+                        captcha = captchaObj;
+                        captchaObj.appendTo('#captcha');
+                        captchaObj.onReady(function() {
+                            document.getElementById('wait').style.display = 'none';
+                        });
+                    }
+                );
             });
         }
+    },
+    mounted() {
+        this.init_geetest();
     }
 };
 </script>
@@ -105,6 +148,7 @@ export default {
 }
 .login-btn {
     text-align: center;
+    margin-top: 15px;
 }
 .login-btn button {
     width: 100%;

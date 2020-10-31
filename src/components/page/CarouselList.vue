@@ -118,6 +118,15 @@ export default {
         // 获取 easy-mock 的模拟数据
         getData() {
             carouselAPI.listCarousels(this.start, this.limit).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('获取轮播图失败', res.msg);
+                    return;
+                }
                 this.carouselsList = res.data.carousel;
                 this.pageTotal = res.data.count;
             });
@@ -159,8 +168,18 @@ export default {
         // 保存编辑
         saveEdit() {
             this.editVisible = false;
-            carouselAPI.updateCarousel(this.form).then(res => {});
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
+            carouselAPI.updateCarousel(this.form).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('修改轮播图失败', res.msg);
+                    return;
+                }
+                this.notifySucceed('修改成功');
+            });
         },
         // 分页导航
         handlePageChange(val) {

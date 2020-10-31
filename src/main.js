@@ -3,7 +3,7 @@
  * @Author: congz
  * @Date: 2020-09-24 17:15:19
  * @LastEditors: congz
- * @LastEditTime: 2020-10-29 15:20:26
+ * @LastEditTime: 2020-10-31 15:03:42
  */
 import Vue from 'vue';
 import App from './App.vue';
@@ -18,9 +18,14 @@ import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
 import axios from 'axios';
+// 全局函数及变量
+import Global from './global';
+Vue.use(Global);
 
 Vue.prototype.axios = axios;
 Vue.config.productionTip = false;
+// 绑定到原型
+Vue.prototype.$initGeet = require('@/assets/gt.js');
 Vue.use(VueI18n);
 Vue.use(ElementUI, {
     size: 'small'

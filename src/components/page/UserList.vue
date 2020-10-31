@@ -106,6 +106,15 @@ export default {
         // 获取后台的数据
         getData() {
             userAPI.listUsers(this.start, this.limit).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('获取用户列表失败', res.msg);
+                    return;
+                }
                 this.usersList = res.data.user;
                 this.pageTotal = res.data.count;
             });

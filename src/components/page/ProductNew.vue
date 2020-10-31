@@ -3,7 +3,7 @@
  * @Author: congz
  * @Date: 2020-09-26 13:55:29
  * @LastEditors: congz
- * @LastEditTime: 2020-10-14 21:10:17
+ * @LastEditTime: 2020-10-31 15:48:31
 -->
 <template>
     <div>
@@ -81,12 +81,31 @@ export default {
     methods: {
         getData(val) {
             categoryAPI.listCategories().then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('获取分类失败', res.msg);
+                    return;
+                }
                 this.categoriesList = res.data.category;
             });
         },
         onSubmit() {
-            productAPI.createProduct(this.form).then(res => {});
-            this.$message.success('提交成功！');
+            productAPI.createProduct(this.form).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('创建商品失败', res.msg);
+                    return;
+                }
+                this.notifySucceed('创建商品成功');
+            });
         }
     }
 };

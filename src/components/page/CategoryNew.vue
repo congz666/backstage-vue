@@ -3,7 +3,7 @@
  * @Author: congz
  * @Date: 2020-09-26 14:12:33
  * @LastEditors: congz
- * @LastEditTime: 2020-10-14 21:11:10
+ * @LastEditTime: 2020-10-31 15:51:13
 -->
 <template>
     <div>
@@ -51,8 +51,18 @@ export default {
     },
     methods: {
         onSubmit() {
-            categoryAPI.createCategory(this.form).then(res => {});
-            this.$message.success('提交成功！');
+            categoryAPI.createCategory(this.form).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('创建分类失败', res.msg);
+                    return;
+                }
+                this.notifySucceed('创建分类成功');
+            });
         }
     }
 };

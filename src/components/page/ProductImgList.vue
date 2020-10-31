@@ -138,6 +138,15 @@ export default {
         // 获取 easy-mock 的模拟数据
         getData() {
             productAPI.listProductImgs(this.form.img_type, this.form.product_id, this.start, this.limit).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('获取商品图片失败', res.msg);
+                    return;
+                }
                 this.productImgsList = res.data.product_img;
                 this.pageTotal = res.data.count;
             });
@@ -153,9 +162,19 @@ export default {
                 type: 'warning'
             })
                 .then(() => {
-                    productAPI.deleteProductImg(this.form.img_type, row.id).then(res => {});
-                    this.$message.success('删除成功');
-                    this.productImgsList.splice(index, 1);
+                    productAPI.deleteProductImg(this.form.img_type, row.id).then(res => {
+                        if (res.code == 20001) {
+                            //token过期，需要重新登录
+                            this.loginExpired(res.msg);
+                            return;
+                        }
+                        if (res.code == 404) {
+                            this.notifyError('删除商品图片失败', res.msg);
+                            return;
+                        }
+                        this.notifySucceed('删除商品图片成功');
+                        this.productImgsList.splice(index, 1);
+                    });
                 })
                 .catch(() => {});
         },
@@ -183,8 +202,18 @@ export default {
         // 保存编辑
         saveEdit() {
             this.editVisible = false;
-            productAPI.updateProductImg(this.form).then(res => {});
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
+            productAPI.updateProductImg(this.form).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('修改商品图片失败', res.msg);
+                    return;
+                }
+                this.notifySucceed('修改商品图片成功');
+            });
         },
         // 分页导航
         handlePageChange(val) {

@@ -3,7 +3,7 @@
  * @Author: congz
  * @Date: 2020-09-26 14:07:57
  * @LastEditors: congz
- * @LastEditTime: 2020-10-14 21:10:55
+ * @LastEditTime: 2020-10-31 15:50:54
 -->
 <template>
     <div>
@@ -77,8 +77,18 @@ export default {
             this.html = render;
         },
         submit() {
-            noticeAPI.createNotice(this.form).then(res => {});
-            this.$message.success('提交成功！');
+            noticeAPI.createNotice(this.form).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('创建公告失败', res.msg);
+                    return;
+                }
+                this.notifySucceed('创建公告成功');
+            });
         }
     }
 };

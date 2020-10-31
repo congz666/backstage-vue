@@ -3,7 +3,7 @@
  * @Author: congz
  * @Date: 2020-09-26 14:07:57
  * @LastEditors: congz
- * @LastEditTime: 2020-10-14 21:10:44
+ * @LastEditTime: 2020-10-31 15:50:41
 -->
 <template>
     <div>
@@ -73,12 +73,18 @@ export default {
     methods: {
         getData() {
             noticeAPI.getNotice(Number(this.notice_id)).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('获取公告失败', res.msg);
+                    return;
+                }
                 if (res.data != null) {
                     this.form.text = res.data.text;
                     this.deleteButton = true;
-                } else {
-                    this.form.text = '不存在该公告ID';
-                    this.deleteButton = false;
                 }
             });
         },
@@ -106,12 +112,32 @@ export default {
         },
         submit() {
             this.form.notice_id = Number(this.notice_id);
-            noticeAPI.updateNotice(this.form).then(res => {});
-            this.$message.success('修改成功！');
+            noticeAPI.updateNotice(this.form).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('修改公告失败', res.msg);
+                    return;
+                }
+                this.notifySucceed('修改公告成功');
+            });
         },
         deleteNotice() {
-            noticeAPI.deleteNotice(Number(this.notice_id)).then(res => {});
-            this.$message.success('删除成功！');
+            noticeAPI.deleteNotice(Number(this.notice_id)).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('删除公告失败', res.msg);
+                    return;
+                }
+                this.notifySucceed('删除公告成功');
+            });
         }
     }
 };

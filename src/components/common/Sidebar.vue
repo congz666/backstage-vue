@@ -58,7 +58,7 @@ export default {
             items: [
                 {
                     icon: 'el-icon-lx-home',
-                    index: 'dashboard',
+                    index: '/dashboard',
                     title: '系统首页'
                 },
                 {
@@ -147,12 +147,12 @@ export default {
                     subs: [
                         {
                             icon: 'el-icon-lx-cascades',
-                            index: 'table',
+                            index: '/table',
                             title: '基础表格'
                         },
                         {
                             icon: 'el-icon-lx-copy',
-                            index: 'tabs',
+                            index: '/tabs',
                             title: 'tab选项卡'
                         },
                         {
@@ -161,33 +161,33 @@ export default {
                             title: '表单相关',
                             subs: [
                                 {
-                                    index: 'form',
+                                    index: '/form',
                                     title: '基本表单'
                                 },
 
                                 {
-                                    index: 'editor',
+                                    index: '/editor',
                                     title: '富文本编辑器'
                                 },
                                 {
-                                    index: 'markdown',
+                                    index: '/markdown',
                                     title: 'markdown编辑器'
                                 },
 
                                 {
-                                    index: 'upload',
+                                    index: '/upload',
                                     title: '文件上传'
                                 }
                             ]
                         },
                         {
                             icon: 'el-icon-lx-emoji',
-                            index: 'icon',
+                            index: '/icon',
                             title: '自定义图标'
                         },
                         {
                             icon: 'el-icon-pie-chart',
-                            index: 'charts',
+                            index: '/charts',
                             title: 'schart图表'
                         },
                         {
@@ -196,18 +196,18 @@ export default {
                             title: '拖拽组件',
                             subs: [
                                 {
-                                    index: 'drag',
+                                    index: '/drag',
                                     title: '拖拽列表'
                                 },
                                 {
-                                    index: 'dialog',
+                                    index: '/dialog',
                                     title: '拖拽弹框'
                                 }
                             ]
                         },
                         {
                             icon: 'el-icon-lx-global',
-                            index: 'i18n',
+                            index: '/i18n',
                             title: '国际化功能'
                         },
                         {
@@ -216,11 +216,11 @@ export default {
                             title: '错误处理',
                             subs: [
                                 {
-                                    index: 'permission',
+                                    index: '/permission',
                                     title: '权限测试'
                                 },
                                 {
-                                    index: '404',
+                                    index: '/404',
                                     title: '404页面'
                                 }
                             ]

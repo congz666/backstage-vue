@@ -50,12 +50,13 @@
 </template>
 <script>
 import bus from '../common/bus';
+import { mapActions } from 'vuex';
 export default {
     data() {
         return {
             collapse: false,
             fullscreen: false,
-            name: 'linxin',
+            name: '请登录',
             message: 2
         };
     },
@@ -66,10 +67,14 @@ export default {
         }
     },
     methods: {
+        ...mapActions(['setAdmin']),
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
-                localStorage.removeItem('ms_username');
+                localStorage.removeItem('admin');
+                localStorage.removeItem('token');
+                // 清空vuex登录信息
+                this.setAdmin('');
                 this.$router.push('/login');
             }
         },

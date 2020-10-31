@@ -3,7 +3,7 @@
  * @Author: congz
  * @Date: 2020-09-26 13:55:29
  * @LastEditors: congz
- * @LastEditTime: 2020-10-14 21:43:22
+ * @LastEditTime: 2020-10-31 15:49:21
 -->
 <template>
     <div>
@@ -61,8 +61,18 @@ export default {
     created() {},
     methods: {
         onSubmit() {
-            productAPI.createProductImg(this.form).then(res => {});
-            this.$message.success('提交成功！');
+            productAPI.createProductImg(this.form).then(res => {
+                if (res.code == 20001) {
+                    //token过期，需要重新登录
+                    this.loginExpired(res.msg);
+                    return;
+                }
+                if (res.code == 404) {
+                    this.notifyError('创建商品图片失败', res.msg);
+                    return;
+                }
+                this.notifySucceed('创建商品图片成功');
+            });
         }
     }
 };

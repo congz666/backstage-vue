@@ -3,7 +3,7 @@
  * @Author: congz
  * @Date: 2020-09-26 15:36:53
  * @LastEditors: congz
- * @LastEditTime: 2020-10-29 14:22:56
+ * @LastEditTime: 2020-10-30 14:47:57
  */
 import axios from 'axios';
 
@@ -16,4 +16,7 @@ const checkToken = () => axios.get('/api/v1/ping').then(res => res.data);
 // 管理员登录
 const adminLogin = form => axios.post('/api/v1/admins', form).then(res => res.data);
 
-export { listUsers, adminLogin, checkToken };
+//极验初始化
+const geetest = () => axios.get('/api/v1/geetest').then(res => res.data);
+
+export { listUsers, adminLogin, checkToken, geetest };
